@@ -50,7 +50,19 @@ def load():
 
 
 def page_href(page):
+    """Имя файла для плоских версий (docs/embed/)."""
     return "index.html" if page["slug"] == "index" else page["slug"] + ".html"
+
+
+def page_path(page):
+    """Путь страницы на сайте — как на Tilda: / , /law/, /squads/ …
+    (docs/index.html, docs/law/index.html, …)."""
+    return "" if page["slug"] == "index" else page["slug"] + "/"
+
+
+def rel_prefix(page):
+    """Относительный путь до корня сайта из данной страницы."""
+    return "" if page["slug"] == "index" else "../"
 
 
 def resolve_asset(name, data, prefix="", asset_base=None):
@@ -68,17 +80,19 @@ def render_fragment(fragment, data, prefix="", asset_base=None):
     return re.sub(r"\{\{img:([^}]+)\}\}", repl, fragment)
 
 
-def render_nav(data, current):
+def render_nav(data, current_page):
     site = data["site"]
+    up = rel_prefix(current_page)
     items = []
     for p in data["pages"]:
         if not p.get("nav"):
             continue
-        cls = ' class="active" aria-current="page"' if p["slug"] == current else ""
-        items.append(f'<li><a href="{page_href(p)}"{cls}>{html.escape(p["nav"])}</a></li>')
+        cls = ' class="active" aria-current="page"' if p["slug"] == current_page["slug"] else ""
+        items.append(f'<li><a href="{up}{page_path(p)}"{cls}>{html.escape(p["nav"])}</a></li>')
+    home = "./" if current_page["slug"] == "index" else up
     return (
         '<header class="nav">'
-        f'<a class="nav__logo" href="index.html">{html.escape(site["home_label"])}</a>'
+        f'<a class="nav__logo" href="{home}">{html.escape(site["home_label"])}</a>'
         '<nav aria-label="Разделы"><ul class="nav__list">' + "".join(items) + "</ul></nav>"
         "</header>"
     )
@@ -217,12 +231,13 @@ def build(asset_base=None):
     data, css = load()
 
     # чистим и создаём выходные папки
+    # (docs/assets — картинки — и docs/CNAME — свой домен — не трогаем)
+    keep_in_docs = {"assets", "CNAME"}
     for d in (DOCS, GS):
         if os.path.isdir(d):
             for name in os.listdir(d):
                 p = os.path.join(d, name)
-                if name == "assets" and d == DOCS:
-                    # картинки не трогаем, css перезапишем
+                if d == DOCS and name in keep_in_docs:
                     continue
                 if os.path.isdir(p):
                     shutil.rmtree(p)
@@ -238,21 +253,31 @@ def build(asset_base=None):
     open(os.path.join(DOCS, ".nojekyll"), "w").close()
 
     site = data["site"]
+
+    # свой домен для GitHub Pages: docs/CNAME
+    domain = (site.get("domain") or "").strip().lower()
+    if domain:
+        with open(os.path.join(DOCS, "CNAME"), "w", encoding="utf-8") as f:
+            f.write(domain + "\n")
+
     footer = f'<footer class="footer">{html.escape(site["name"])} · {html.escape(site["short"])}</footer>'
 
     for i, page in enumerate(data["pages"]):
         with open(os.path.join(CONTENT, page["slug"] + ".html"), encoding="utf-8") as f:
             fragment = f.read().strip()
 
-        # 1) полноценная страница сайта
+        # 1) полноценная страница сайта: docs/index.html, docs/law/index.html, …
+        up = rel_prefix(page)
         body = (
-            render_nav(data, page["slug"])
-            + render_cover(page, data)
-            + '<main id="content">\n' + render_fragment(fragment, data) + "\n</main>\n"
+            render_nav(data, page)
+            + render_cover(page, data, prefix=up)
+            + '<main id="content">\n' + render_fragment(fragment, data, prefix=up) + "\n</main>\n"
             + footer
         )
-        out = render_document(page, data, body, css_link="assets/style.css")
-        with open(os.path.join(DOCS, page_href(page)), "w", encoding="utf-8") as f:
+        out = render_document(page, data, body, css_link=f"{up}assets/style.css", prefix=up)
+        out_dir = os.path.join(DOCS, page_path(page))
+        os.makedirs(out_dir, exist_ok=True)
+        with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
             f.write(out)
 
         # 2) embed-версия без меню (для «Встроить по URL» в Google Sites)
@@ -277,12 +302,38 @@ def build(asset_base=None):
         with open(os.path.join(GS, name), "w", encoding="utf-8") as f:
             f.write(out)
 
+    write_404(data, css)
     write_cheatsheet(data)
 
     # список страниц для README/проверки
     print("Собрано страниц:", len(data["pages"]))
     for p in data["pages"]:
-        print(f"  docs/{page_href(p):18s}  ←  {p['source']}")
+        print(f"  /{page_path(p):14s}  docs/{page_path(p)}index.html  ←  {p['source']}")
+    if domain:
+        print("Свой домен (docs/CNAME):", domain)
+
+
+def write_404(data, css):
+    """docs/404.html — GitHub Pages показывает её для несуществующих адресов.
+    Ссылка «на главную» вычисляется скриптом: на *.github.io сайт лежит в подпапке
+    /<репозиторий>/, на своём домене — в корне."""
+    site = data["site"]
+    body = (
+        '<section class="cover" style="--cover-h:100vh">'
+        '<div class="cover__filter"></div>'
+        '<div class="cover__content">'
+        '<p class="cover__uptitle">404</p>'
+        '<h1 class="cover__title">Такой страницы нет</h1>'
+        '<p style="margin-top:30px"><a id="home" href="/" style="font-size:18px">← На главную</a></p>'
+        "</div></section>"
+        "<script>(function(){var h=location.hostname,p=location.pathname.split('/');"
+        "document.getElementById('home').href=/\\.github\\.io$/.test(h)&&p[1]?'/'+p[1]+'/':'/';})();</script>"
+    )
+    page = {"slug": "404", "title": "Страница не найдена", "cover_uptitle": "404",
+            "cover_title": "Такой страницы нет", "youtube": ""}
+    out = render_document(page, data, body, css_inline=css)
+    with open(os.path.join(DOCS, "404.html"), "w", encoding="utf-8") as f:
+        f.write(out)
 
 
 if __name__ == "__main__":
