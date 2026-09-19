@@ -30,7 +30,31 @@
 
 ---
 
-## 2. Свой домен — да, подключается
+## 2. Свой домен — сейчас ВЫКЛЮЧЕН, сайт работает на github.io
+
+Рабочий адрес сайта: **https://deusofsanguis.github.io/bloodpact/**
+Файла `docs/CNAME` в репозитории намеренно нет, `content/pages.json → "site" → "domain"` пустой.
+
+⚠️ **Как «ломается» сайт (проверено на bloodpact.su 19.09).** Как только в `docs/` появляется файл
+`CNAME` с доменом, GitHub Pages начинает переадресовывать на этот домен **все** адреса сайта,
+включая `https://deusofsanguis.github.io/bloodpact/…`. Если домен в этот момент не готов
+(нет HTTPS-сертификата / не подтверждён в настройках Pages), получается:
+
+- `https://bloodpact.su/…` → «404 — There isn't a GitHub Pages site here»;
+- `https://deusofsanguis.github.io/bloodpact/…` → редирект на **`http://`**`bloodpact.su/…`
+  (небезопасное соединение, фоновое видео YouTube на обложке режется как mixed content).
+
+Поэтому домен подключается одним движением и только когда он готов:
+
+1. Проверить DNS у регистратора: `@` → A-записи 185.199.108–111.153, `www` → CNAME `deusofsanguis.github.io`.
+2. Вписать домен в `content/pages.json → "site" → "domain"` → `python3 build.py` (сборка создаст
+   `docs/CNAME`) → закоммитить и запушить `docs/`. Либо создать `docs/CNAME` в веб-редакторе GitHub в `main`.
+3. **Settings → Pages** → дождаться «DNS check successful» → включить **Enforce HTTPS**
+   (сертификат Let's Encrypt выпускается сам: обычно минуты, иногда до суток).
+4. Проверить, что `https://<домен>/elevation/` открывается, — и только потом давать ссылку людям.
+
+**Как быстро откатиться**, если сайт снова лёг: удалить `docs/CNAME` из ветки `main` и очистить поле
+**Settings → Pages → Custom domain**. Через 1–2 минуты (пересборка Pages) сайт вернётся на github.io.
 
 GitHub Pages поддерживает свои домены бесплатно, с автоматическим HTTPS-сертификатом (Let's Encrypt).
 Нужно только купить домен и прописать DNS-записи.
