@@ -1,0 +1,120 @@
+{
+  "site": {
+    "name": "Пакт крови — фракция демонов",
+    "short": "yufu",
+    "home_label": "Главная страница",
+    "lang": "ru",
+    "description": "Пакт крови — информационный сайт фракции демонов: законы, иерархия, отряды, шрамы, пределы крови, битвы крови, территории, поощрения, рейтинг и суд."
+  },
+  "assets": {
+    "cover.jpg": "https://static.tildacdn.pub/tild3736-3037-4334-b863-353562353039/d946dbce69a24e0288d5.jpg",
+    "og-image.png": "https://static.tildacdn.pub/tild6233-3966-4466-b663-643734636462/image.png",
+    "territory-1.png": "https://static.tildacdn.pub/tild6631-3432-4730-a366-346236323566/image.png",
+    "territory-2.png": "https://static.tildacdn.pub/tild3461-6166-4264-b434-633430366439/image.png",
+    "territory-3.png": "https://static.tildacdn.pub/tild6131-6164-4731-a135-663630663437/image.png",
+    "territory-4.png": "https://static.tildacdn.pub/tild3633-6536-4366-a333-396232373936/image.png",
+    "territory-5.png": "https://static.tildacdn.pub/tild3133-6530-4439-b132-306461663261/image.png",
+    "champion.webp": "https://static.tildacdn.pub/tild3938-6139-4036-a531-623036666330/i.webp"
+  },
+  "pages": [
+    {
+      "slug": "index",
+      "source": "https://bloodpact-yufu.tilda.ws/",
+      "title": "Главная страница",
+      "nav": null,
+      "cover_uptitle": "yufu",
+      "cover_title": "Фракция демонов",
+      "youtube": "2P6JSigJ7xo"
+    },
+    {
+      "slug": "law",
+      "source": "https://bloodpact-yufu.tilda.ws/law",
+      "title": "Демонический закон",
+      "nav": "Демонический закон",
+      "cover_uptitle": "yufu",
+      "cover_title": "Демонический закон",
+      "youtube": "RMnzGUtdsls"
+    },
+    {
+      "slug": "elevation",
+      "source": "https://bloodpact-yufu.tilda.ws/elevation",
+      "title": "Возвышение крови",
+      "nav": "Возвышение крови",
+      "cover_uptitle": "yufu",
+      "cover_title": "Возвышение крови",
+      "youtube": "Hb7SHEtpigc"
+    },
+    {
+      "slug": "squads",
+      "source": "https://bloodpact-yufu.tilda.ws/squads",
+      "title": "Отряды",
+      "nav": "Отряды",
+      "cover_uptitle": "yufu",
+      "cover_title": "Отряды",
+      "youtube": "Xdbl3z_21P4"
+    },
+    {
+      "slug": "scars",
+      "source": "https://bloodpact-yufu.tilda.ws/scars",
+      "title": "Шрамы",
+      "nav": "Шрамы",
+      "cover_uptitle": "yufu",
+      "cover_title": "Шрамы безотрядных",
+      "youtube": "bMxFePqtYoo"
+    },
+    {
+      "slug": "limits",
+      "source": "https://bloodpact-yufu.tilda.ws/limits",
+      "title": "Пределы крови",
+      "nav": "Пределы крови",
+      "cover_uptitle": "yufu",
+      "cover_title": "Пределы",
+      "youtube": "XVDBTsir2O4"
+    },
+    {
+      "slug": "bloodbattle",
+      "source": "https://bloodpact-yufu.tilda.ws/bloodbattle",
+      "title": "Битва крови",
+      "nav": "Битва крови",
+      "cover_uptitle": "yufu",
+      "cover_title": "Битвы крови",
+      "youtube": "XJsTQCXAJnY"
+    },
+    {
+      "slug": "territories",
+      "source": "https://bloodpact-yufu.tilda.ws/territories",
+      "title": "Территории",
+      "nav": "Территории",
+      "cover_uptitle": "yufu",
+      "cover_title": "Территории",
+      "youtube": "ZmU692cglz8"
+    },
+    {
+      "slug": "incentives",
+      "source": "https://bloodpact-yufu.tilda.ws/incentives",
+      "title": "Поощрения",
+      "nav": "Поощрения",
+      "cover_uptitle": "yufu",
+      "cover_title": "Поощрения",
+      "youtube": "W_47yPcLm2U"
+    },
+    {
+      "slug": "ranking",
+      "source": "https://bloodpact-yufu.tilda.ws/ranking",
+      "title": "Рейтинг",
+      "nav": "Рейтинг",
+      "cover_uptitle": "yufu",
+      "cover_title": "Рейтинг",
+      "youtube": "GADE8Tkaa2Q"
+    },
+    {
+      "slug": "court",
+      "source": "https://bloodpact-yufu.tilda.ws/court",
+      "title": "Суд",
+      "nav": "Суд",
+      "cover_uptitle": "yufu",
+      "cover_title": "Суд",
+      "youtube": "Sg0vFNo_Qig"
+    }
+  ]
+}
